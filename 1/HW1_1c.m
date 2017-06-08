@@ -12,14 +12,11 @@ over_smpl = 2;
 M = 2^nextpow2(over_smpl*N); % FFT size (zero-padding & over_smpl)
 t = (1:N)'/fs;
 
+L = [20 100 200];
 % 1a)
 v = [0 1 10 50 100 200]/3.6; % km/h to m/s
 % 1b)
 % v = 100/3.6;
-% L = [20 100 200];
-% 1c)
-v = [1 10 50 100 150]/3.6;
-L = 20:5:200;
 
 % Param
 fo = 1.e4; % Tx freq
@@ -82,37 +79,13 @@ end
 
 % Plot results
 % 1a) MSE vs SNR
-% for iv = 1:length(v)
-% figure()
-% semilogy(snr, MSE1v(:, iv), '-', snr, MSE2v(:, iv), '-*', ...
-%     snr, CRB, '--', snr, MSE_floor*(1+0*snr), ':', ...
-%     snr, ((1/4)/12)*(1+0*snr), ':')
-% xlabel('SNR [dB]')
-% ylabel('MSE for velocity')
-% title(['MSE vs SNR for ' num2str(3.6*v(iv)) ' km/h speed'])
-% legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
-% end
-
-% 1b) MSE vs power of TX signal
-% for il = 1:size(A_power, 2)
-%     figure()
-%     semilogy(A_power(:, il), MSE1v, '-', ...
-%         A_power(:, il), MSE2v, '-*', ...
-%         A_power(:, il), CRB', '--')
-%     title(['MSE vs power of TX signal for ' num2str(L(il)) ' m']);
-%     xlabel('Power of transmitted signal');
-%     ylabel('MSE for velocity');
-%     legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
-% end
-
-% 1c) MSE vs distance
 for iv = 1:length(v)
-figure()
-semilogy(L, MSE1v(:, iv), '-', L, MSE2v(:, iv), '-*', ...
-    L, CRB, '--', snr, MSE_floor*(1+0*L), ':', ...
-    L, ((1/4)/12)*(1+0*L), ':')
-xlabel('SNR [dB]')
-ylabel('MSE for velocity')
-title(['MSE vs SNR for ' num2str(3.6*v(iv)) ' km/h speed'])
-legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
+    % figure()
+    % semilogy(snr, MSE1v(:, iv), '-', snr, MSE2v(:, iv), '-*', ...
+    %     snr, CRB, '--', snr, MSE_floor*(1+0*snr), ':', ...
+    %     snr, ((1/4)/12)*(1+0*snr), ':')
+    % xlabel('SNR [dB]')
+    % ylabel('MSE for velocity')
+    % title(['MSE vs SNR for ' num2str(3.6*v(iv)) ' km/h speed'])
+    % legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
 end
