@@ -13,12 +13,12 @@ M = 2^nextpow2(over_smpl*N); % FFT size (zero-padding & over_smpl)
 t = (1:N)'/fs;
 
 % 1a)
-v = [0 1 10 50 100 200]/3.6; % km/h to m/s
+% v = [0 1 10 50 100 200]/3.6; % km/h to m/s
 % 1b)
 % v = 100/3.6;
 % L = [20 100 200];
 % 1c)
-v = [1 10 50 100 150]/3.6;
+% v = [1 10 50 100 150]/3.6;
 L = 20:5:200;
 
 % Param
@@ -55,8 +55,7 @@ for iv = 1:length(v)
             
             % Freq. estimation: DTF on M samples
             S = (abs(fft(x, M)).^2)/M; % DFT on M>N samples (zero-padding)
-            
-            [~, peak_pos] = findpeaks(S(2:end/2), 'SORTSTR','descend');
+            [~, peak_pos] = findpeaks(S(2:end/2), 'SORTSTR', 'descend');
             f_est1(run) = peak_pos(1);
             v1(run) = ((f_est1(run)/M)*fs - fo)*c/(2*Fo);
             
@@ -94,16 +93,16 @@ end
 % end
 
 % 1b) MSE vs power of TX signal
-% for il = 1:size(A_power, 2)
-%     figure()
-%     semilogy(A_power(:, il), MSE1v, '-', ...
-%         A_power(:, il), MSE2v, '-*', ...
-%         A_power(:, il), CRB', '--')
-%     title(['MSE vs power of TX signal for ' num2str(L(il)) ' m']);
-%     xlabel('Power of transmitted signal');
-%     ylabel('MSE for velocity');
-%     legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
-% end
+for il = 1:size(A_power, 2)
+    figure()
+    semilogy(A_power(:, il), MSE1v, '-', ...
+        A_power(:, il), MSE2v, '-*', ...
+        A_power(:, il), CRB', '--')
+    title(['MSE vs power of TX signal for ' num2str(L(il)) ' m']);
+    xlabel('Power of transmitted signal');
+    ylabel('MSE for velocity');
+    legend('MSE', 'MSE with quad. interpol', 'Cramer Rao Bound')
+end
 
 % 1c) MSE vs distance
 for iv = 1:length(v)
