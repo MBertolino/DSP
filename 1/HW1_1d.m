@@ -1,12 +1,11 @@
-clear all; close all ; clc
-format long
+clear all; close all; clc
 
 fs = 3*10^4;
 T = 0.01;
 N = fs*T;
-Oversampling = 2;
-% M = Oversampling*N;
-M = 2^nextpow2(Oversampling*N); % FFT size (zero-padding & oversampling)
+over_smpl = 2;
+% M = over_smpl*N;
+M = 2^nextpow2(over_smpl*N); % FFT size (zero-padding & over_smpl)
 t = (1:N)'/fs;
 
 v = 200/3.6;

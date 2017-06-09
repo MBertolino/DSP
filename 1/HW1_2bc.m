@@ -1,9 +1,8 @@
-% andrea.matera@polimi.it
-clear all; close all; clc
+clear all; %close all; clc
 
 % Sampling param
-fs = 4e4*3*3.6;
-T = 0.0165;
+fs = 4e4;
+T = 0.01;
 N = fs*T;
 over_smpl = 2;
 M = 2^nextpow2(over_smpl*N); % FFT size (zero-padding & over_smpl)
@@ -21,15 +20,15 @@ df = 2*v/c*Fo;
 refl = 1/20;
 sigma_w = 10^-10;
 
-Nrun = 30;
+Nrun = 1000;
 
 % Preallocate
-f_est1 = zeros(1,Nrun);
+f_est1 = zeros(1, Nrun);
 f_est2 = f_est1;
 v1 = f_est1;
 v2 = f_est1;
-snr = zeros(1,length(L));
-MSE1 = zeros(length(L),length(v));
+snr = zeros(1, length(L));
+MSE1 = zeros(length(L), length(v));
 MSE2 = MSE1;
 MSE1v = MSE1;
 MSE2v = MSE1;
@@ -46,7 +45,7 @@ for iv = 1:length(v)
             phi2 = 2*pi*rand;
             w = sqrt(sigma_w)*randn(N, 1);
             x = A1(il)*cos(2*pi*(fo + df(iv))*t + phi1) + A2(il)*cos(2*pi*fo*t + phi2) + w;
-            x = x.*blackman(N);
+%             x = x.*blackman(N);
             
             % Freq. estimation: DTF on M samples
             S = (abs(fft(x, M)).^2)/N; %DFT on M>N samples (zero-padding)
