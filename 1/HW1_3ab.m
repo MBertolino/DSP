@@ -26,14 +26,14 @@ A = sqrt(3*10.^(snr./10)*(sigma_w));
 g = triang(Ng)';
 
 % Preallocate
-Nrun = 100;
+Nrun = 1000;
 x1 = zeros(1, N1);
 tod1 = zeros(1, Nrun);
 MSE_tod = zeros(1, length(snr));
 
 for isnr = 1:length(snr)
     for run = 1:Nrun
-        % Pulse generation
+        % Pulse generation0
         w1 = sqrt(sigma_w)*randn(1, N);
         x1 = A(isnr)*[zeros(1, N1) g zeros(1, N - Ng - N1)] + w1;
         
@@ -53,7 +53,7 @@ figure()
 semilogy(snr, MSE_tod, snr, CRB_tod, '--');
 xlabel('Signal to noise-ratio');
 ylabel('MSE of Time of Delay');
-title(['MSE vs SNR for ' num2str(L) ' meters'])
+title(['MSE vs SNR for ' num2str(L1) ' meters'])
 legend('MSE', 'Cramer Rao Bound')
 
 
@@ -65,7 +65,7 @@ v = [10 50 100 150];
 x2 = zeros(1, N1);
 tod2 = zeros(1, Nrun);
 v_est = zeros(1, Nrun);
-MSE_speed = zeros(length(v), length(snr));
+MSE_v = zeros(length(v), length(snr));
 
 for iv = 1:length(v)
     % Second pulse
@@ -92,19 +92,19 @@ for iv = 1:length(v)
             % Speed estimation
             v_est(run) = c*(tod1(run) - tod2(run))/dt*0.5*3.6;
         end
-        MSE_speed(iv, isnr) = mean((v_est - v(iv)).^2);
+        MSE_v(iv, isnr) = mean((v_est - v(iv)).^2);
     end
 end
 
 % CRB for Speed estimation
-CRB_speed = 2./(24*10.^(snr/10)/Tg^2)*(c/(2*dt))^2;
+CRB_v = 2./(24*10.^(snr/10)/Tg^2)*(c/(2*dt))^2;
 
 % 3b) Plot MSE for Speed estimation
 for iv = 1:length(v)
     figure()
-    semilogy(snr, MSE_speed(iv, :), snr, CRB_speed);
+    semilogy(snr, MSE_v(iv, :), snr, CRB_v, '--');
     xlabel('Signal to noise-ratio');
-    ylabel('MSE of Time of Delay');
+    ylabel('MSE for velocity');
     title(['MSE vs SNR for ' num2str(v(iv)) ' km/h'])
     legend('MSE', 'Cramer Rao Bound')
 end
