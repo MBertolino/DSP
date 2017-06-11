@@ -14,12 +14,12 @@ tauL = 2*L/c;
 T = Tg + tauL; % Time window large enough
 N = ceil(T/ts);
 
-% Policeman param
+% Policeman param - first pulse
 L1 = 200; % Where the policeman stands
 tau1 = 2*L1/c;
 N1 = ceil(tau1/ts);
 
-% Param
+% Pulse init
 sigma_w = 1e-10;
 snr = -20:3:30;
 A = sqrt(3*10.^(snr./10)*(sigma_w));
@@ -33,7 +33,7 @@ MSE_tod = zeros(1, length(snr));
 
 for isnr = 1:length(snr)
     for run = 1:Nrun
-        % Signal generation
+        % Pulse generation
         w1 = sqrt(sigma_w)*randn(1, N);
         x1 = A(isnr)*[zeros(1, N1) g zeros(1, N - Ng - N1)] + w1;
         
@@ -61,18 +61,19 @@ legend('MSE', 'Cramer Rao Bound')
 dt = 0.5;
 v = [10 50 100 150];
 
-% Preallocation
+% Preallocate
 x2 = zeros(1, N1);
 tod2 = zeros(1, Nrun);
-speed = zeros(1, Nrun);
+v_est = zeros(1, Nrun);
 MSE_speed = zeros(length(v), length(snr));
 
 for iv = 1:length(v)
+    % Second pulse
     tau2 = (2*(L1 - dt*v(iv)/3.6)/c);
     N2 = ceil(tau2/ts);
     for isnr = 1:length(snr)
         for run = 1:Nrun
-            % Signal generation
+            % Pulse generation
             w1 = sqrt(sigma_w)*randn(N, 1);
             w2 = sqrt(sigma_w)*randn(N, 1);
             x1 = A(isnr)*[zeros(1, N1) g zeros(1, N - Ng - N1)]' + w1;
@@ -89,20 +90,21 @@ for iv = 1:length(v)
             tod2(run) = lag(idx)*ts;
             
             % Speed estimation
-            speed(run) = c*(tod1(run) - tod2(run))/dt*0.5*3.6;
+            v_est(run) = c*(tod1(run) - tod2(run))/dt*0.5*3.6;
         end
-        MSE_speed(iv, isnr) = mean((speed - v(iv)).^2);
+        MSE_speed(iv, isnr) = mean((v_est - v(iv)).^2);
     end
 end
 
 % CRB for Speed estimation
 CRB_speed = 2./(24*10.^(snr/10)/Tg^2)*(c/(2*dt))^2;
 
+% 3b) Plot MSE for Speed estimation
 for iv = 1:length(v)
     figure()
     semilogy(snr, MSE_speed(iv, :), snr, CRB_speed);
     xlabel('Signal to noise-ratio');
     ylabel('MSE of Time of Delay');
-    title(['MSE vs SNR for ' num2str(v(iv)*3.6) ' km/h'])
+    title(['MSE vs SNR for ' num2str(v(iv)) ' km/h'])
     legend('MSE', 'Cramer Rao Bound')
 end
